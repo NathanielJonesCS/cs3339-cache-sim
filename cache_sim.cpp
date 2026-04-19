@@ -8,14 +8,15 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-    if (argc != 4) {
+    if (argc != 5) {
         cerr << "Usage: ./cache_sim num_entries associativity input_file" << endl;
         return 1;
     }
 
     int num_entries    = stoi(argv[1]);
     int associativity  = stoi(argv[2]);
-    string input_file  = argv[3];
+    int block_size     = stoi(argv[3]);
+    string input_file  = argv[4];
 
     int num_sets = num_entries / associativity;
 
@@ -26,8 +27,8 @@ int main(int argc, char* argv[]) {
 
     int addr;
     while (infile >> addr) {
-        int set_index = addr % num_sets;
-        int tag       = addr / num_sets;
+        int set_index = addr / block_size % num_sets;
+        int tag       = addr / (block_size * num_sets);
 
         list<int>& lru = cache[set_index];
         bool hit = false;
